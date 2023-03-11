@@ -5,18 +5,43 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import UserTable from "./components/UserTable";
 import axios from "axios";
-import { UserType } from "./@types/user";
+import { UserType2 } from "./@types/user";
 
 function App() {
-  const [users, setUsers] = useState<UserType[] | null>(null);
+  const [users, setUsers] = useState<UserType2[] | null>(null);
+  const [usersData, setUsersData] = useState<UserType2[] | null | undefined>(
+    null
+  );
+  // const keywordRef = useRef<HTMLInputElement>(null);
+
+  const keywordChanged = (e: any) => {
+    const keyword = e.target.value.toLowerCase();
+
+    const userArray = users?.filter((user) => {
+      const fn = user.firstName.toLowerCase();
+      const ln = user.lastName.toLowerCase();
+      const un = user.username.toLowerCase();
+      const ph = user.phone.toLowerCase();
+      const em = user.email.toLowerCase();
+
+      return (
+        fn.includes(keyword) ||
+        ln.includes(keyword) ||
+        un.includes(keyword) ||
+        ph.includes(keyword)
+      );
+    });
+    setUsersData(userArray);
+  };
 
   useEffect(() => {
-    const baseURL = "https://jsonplaceholder.typicode.com/users";
+    const baseURL = "https://dummyjson.com/users";
     const getData = async () => {
       const response = await axios.get(baseURL);
 
-      console.log(response.data);
-      setUsers(response.data);
+      console.log(response.data.users);
+      setUsers(response.data.users);
+      setUsersData(response.data.users);
     };
 
     getData();
@@ -26,7 +51,7 @@ function App() {
     <div className="App">
       <header className="App-header text-center">
         <h1 className="">Search and Sort User list</h1>
-        <div className="mt-4 mx-5 d-flex flex-column align-items-center border-bottom pb-2 ">
+        <div className="mt-4 mx-5 d-flex flex-column align-items-center  pb-2 ">
           <Form>
             {/* <Form.Label className="">Enter the keyword</Form.Label> */}
             <Form.Control
@@ -34,6 +59,8 @@ function App() {
               style={{ width: "50vw" }}
               className="text-center"
               placeholder="type here what do you want search"
+              // ref={keywordRef}
+              onChange={(e) => keywordChanged(e)}
             />
           </Form>
           <div>
@@ -43,7 +70,7 @@ function App() {
         </div>
       </header>
       <main>
-        <UserTable users={users} />
+        <UserTable users={usersData} />
       </main>
     </div>
   );
