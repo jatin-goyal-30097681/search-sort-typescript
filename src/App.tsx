@@ -15,20 +15,21 @@ function App() {
   // const keywordRef = useRef<HTMLInputElement>(null);
 
   const keywordChanged = (e: any) => {
-    const keyword = e.target.value.toLowerCase();
+    const keyword: string = e.target.value.toLowerCase();
 
     const userArray = users?.filter((user) => {
-      const fn = user.firstName.toLowerCase();
-      const ln = user.lastName.toLowerCase();
-      const un = user.username.toLowerCase();
-      const ph = user.phone.toLowerCase();
-      const em = user.email.toLowerCase();
+      const fn: string = user.firstName.toLowerCase();
+      const ln: string = user.lastName.toLowerCase();
+      const un: string = user.username.toLowerCase();
+      const ph: string = user.phone.toLowerCase().trim().replaceAll(" ", "");
+      const em: string = user.email.toLowerCase();
 
       return (
         fn.includes(keyword) ||
         ln.includes(keyword) ||
         un.includes(keyword) ||
-        ph.includes(keyword)
+        ph.includes(keyword) ||
+        em.includes(keyword)
       );
     });
     setUsersData(userArray);
